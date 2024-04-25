@@ -404,20 +404,20 @@ app.post("/delete_item", isAuth, async (req, res) => {
 
 })
 
-app.get('./search_item' ,isAuth , async(req,res)=>{
+app.get('/search_item' ,isAuth , async(req,res)=>{
 
     try {
-        const searchString = req.query.search; // Assuming the search string is sent as a query parameter
+        const searchString = req.query.search; 
         
-        // Use a regular expression to perform a case-insensitive search
+       
         const regex = new RegExp(searchString, 'i');
         
-        // Search for todos based on the search string
-        const todos = await Todo.find({
-            $or: [
-                { todo: { $regex: regex } },
-                { username: { $regex: regex } }
-            ]
+      
+        const todos = await todoModel.find({
+            
+                 todo: { $regex: regex } ,
+                
+            
         }).sort({ createdAt: -1 }); // Sort by createdAt descending
         
         res.json(todos);
