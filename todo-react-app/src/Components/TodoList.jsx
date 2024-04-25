@@ -86,7 +86,7 @@ const TodoList = () => {
             <button className="add-task-btn" onClick={handleAddTask}>Add task</button>
             <button className="search-btn" onClick={handleSearch}>Search</button>
             
-                <ul className="search-list">
+                <ul className="search-list">                  
                     {searchedTodo.map(todo => (
                         <li key={todo._id}>{todo.todo}</li>
                     ))}

@@ -44,11 +44,9 @@ const TodoSlice = createSlice({
     todoSearch(state,action){
       state.searchedTodo = action.payload
     },
-    setError(state, action) {
-      state.error = action.payload;
     },
   },
-});
+);
 
 export const {
   addTodo,
