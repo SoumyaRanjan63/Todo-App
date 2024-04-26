@@ -28,7 +28,6 @@ mongoose
   });
 
 // middlewares
-app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -158,17 +157,7 @@ app.post("/login", async (req, res) => {
        userId: userDb._id, username: userDb.username, email: userDb.email
        }, process.env.jwttoken ,{expiresIn});
 
-    //Session base Auth
-    // req.session.isAuth = true;
-
-    // Send the JWT token as response
-    // res.json({ token });
-    // req.session.user = {
-    //   userId: userDb._id,
-    //   username: userDb.username,
-    //   email: userDb.email,
-    // };
-
+    
     return res.send({
       status: 200,
       message: "Login Successfull",
@@ -202,17 +191,6 @@ app.get("/dashboard", isAuth, async (req, res) => {
   }
 });
 
-// app.post("/logout", isAuth, (req, res) => {
-//   req.session.destroy((err) => {
-//     if (err) throw err;
-
-//     return res.send({
-//       status: 200,
-//       message: "Logout Successfull",
-//     });
-//   });
-
-// })
 
 // Api for logout from all devices 
 // app.post("/logout_from_all_devices", isAuth, async (req, res) => {
@@ -404,33 +382,51 @@ app.post("/delete_item", isAuth, async (req, res) => {
 
 })
 
-app.get('./search_item' ,isAuth , async(req,res)=>{
+app.get('/search_item' ,isAuth , async(req,res)=>{
 
     try {
-        const searchString = req.query.search; // Assuming the search string is sent as a query parameter
-        
-        // Use a regular expression to perform a case-insensitive search
-        const regex = new RegExp(searchString, 'i');
-        
-        // Search for todos based on the search string
-        const todos = await Todo.find({
-            $or: [
-                { todo: { $regex: regex } },
-                { username: { $regex: regex } }
-            ]
-        }).sort({ createdAt: -1 }); // Sort by createdAt descending
-        
-        res.json(todos);
+        const searchString = req.query.search;        
+      
+        const regex = new RegExp(searchString, 'i');       
+      
+        const todos = await todoModel.find({           
+              todo: { $regex: regex } ,              
+      
+        }).sort({ createdAt: -1 }); 
+         console.log(todos);
+        res.send({
+          status:200,
+          message:"Todos searched successfully",
+          data:todos
+        });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
+        res.send({
+          status:500,
+          error:error.message 
+        });
     }
+
 })
+
+app.listen(PORT, () => {
+  console.log("server is running.");
+  console.log(`http://localhost:${PORT}`);
+});
+
+
+
+
+
+
+
+
+
 
 // peginated API
 // read-item?skip+15
 // read-item
-// app.get("/read-itemsr",async(req,res)=> {
+// app.get("/read-items",async(req,res)=> {
 //   const SKIP = req.query.skip || 0;
 //   const LIMIT = process.env.LIMIT;
 //   const username = req.session.user.username;
@@ -461,10 +457,7 @@ app.get('./search_item' ,isAuth , async(req,res)=>{
 //   }
 // })
 
-app.listen(PORT, () => {
-  console.log("server is running.");
-  console.log(`http://localhost:${PORT}`);
-});
+
 
 // Steps to follow>.........
 
