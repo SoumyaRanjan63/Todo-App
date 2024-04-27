@@ -65,6 +65,12 @@ export const addTodos= (todo) => async (dispatch) => {
       throw new Error(response.data.error);
     }
     dispatch(addTodo(response.data.data));
+    const emailData = {
+      email: "recipient@example.com", // Replace with recipient's email address
+      subject: "New Todo Added",
+      message: `A new todo "${todo}" has been added.`
+  };
+  await sendEmail(emailData);
   } catch (error) {
     dispatch(setError(error.message))
     // console.log(error.message);
@@ -134,3 +140,12 @@ export const searchTodos = (todos)=>async(dispatch)=>{
     dispatch(setError(error.message))
   }
 }
+// export const mailSend = ()=>async(dispatch)=>{
+//   try {
+//      const response = await api.post('/sendemail')
+//      console.log(response.data);
+//      dispatch()
+//   } catch (error) {
+//      console.log(error)
+//   }
+// }

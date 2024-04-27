@@ -19,6 +19,10 @@ const TodoList = () => {
  
     const dispatch = useDispatch();
 
+    // const handlemail=()=>{
+    //     dispatch(mailSend());
+    // }
+
     const handleSearch = () => {
         // setShowSearchList(true); 
         if(input===''){
@@ -121,6 +125,7 @@ const TodoList = () => {
             </ul>
             }
             <button type="button" onClick={handleLogout}>Logout</button>
+            {/* <button type="button" onClick={handlemail}>sendmail</button> */}
         </div>
     );
 }

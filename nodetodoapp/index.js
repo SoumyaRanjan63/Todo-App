@@ -9,6 +9,7 @@ const validator = require("validator");
 const { isAuth } = require("./middleWares/isAuth");
 const todoModel = require("./models/todoModel");
 const cors = require('cors');
+const nodemailer = require("nodemailer");
 
 
 
@@ -32,6 +33,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cors());
+
+
+// nodemailer configuration
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+      user: process.env.EMAIL_USER, 
+      pass: process.env.EMAIL_PASSWORD
+  }
+});
+ 
+// Function to send email
+
 
 // routes
 
@@ -253,6 +267,14 @@ app.post("/create_item", isAuth, async (req, res) => {
   })
   try {
     const todoDb = await todoObj.save();
+  
+    const emailData = {
+      email: `${req.user.email}`, 
+      subject: "New Todo Added",
+      message: `A new todo "${todoText}" has been added.`
+  };
+      await sendEmail(emailData);
+     
     return res.send({
       status: 201,
       message: "Todo created successfully.",
@@ -263,7 +285,7 @@ app.post("/create_item", isAuth, async (req, res) => {
     return res.send({
       status: 500,
       message: "Database error",
-      error: err
+      error: err.message
     })
   }
 
@@ -313,13 +335,18 @@ app.post("/edit_item", isAuth, async (req, res) => {
       { todo: newData },
       { new: true }
     );
-
+    const emailData = {
+      email: `${req.user.email}`, 
+      subject: "Todo successfully updated",
+      message: `Todo "${newData}" updated.`
+  };
+      await sendEmail(emailData);
     return res.send({
       status: 200,
       message: "Todo updated successfully",
       data: todoPrev,
     });
-
+     
   } catch (error) {
     return res.send({
       status: 500,
@@ -365,7 +392,12 @@ app.post("/delete_item", isAuth, async (req, res) => {
 
     //Delete the todo in DB
     const todoPrev = await todoModel.findOneAndDelete({ _id: id });
-
+     const emailData = {
+      email: `${req.user.email}`, 
+      subject: "Todo deleted",
+      message: `"${todoDb.todo}" This task has deleted .`
+  };
+      await sendEmail(emailData);
     return res.send({
       status: 200,
       message: "Todo deleted successfully",
@@ -408,6 +440,60 @@ app.get('/search_item' ,isAuth , async(req,res)=>{
     }
 
 })
+
+const sendEmail = ({ email, subject, message }) => {
+  return new Promise((resolve, reject) => {
+      const mailOptions = {
+          from: process.env.EMAIL_USER,
+          to: email,
+          subject: subject, 
+          text: message 
+      };
+
+      // Sending email
+      transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+              console.error(error);
+              reject({
+                  status: 500,
+                  message: "An error occurred while sending email",
+                  error: error.message
+              });
+          } else {
+              console.log("Email sent: " + info.response);
+              resolve({
+                  status: 200,
+                  message: "Email sent successfully"
+              });
+          }
+      });
+  });
+};
+
+
+
+
+// app.post("/sendemail", async (req, res) => {
+//   try {
+//       const emailData = {
+//           email: "sranjan6370@gmail.com", 
+//           subject: "Test Email",
+//           message: "This is a test email from your application."
+//       };
+//       const result = await sendEmail(emailData);
+//       console.log(result);
+//       res.send({
+//         status:200,
+//         message:"email send successfully",
+//         data:result
+//       });
+//   } catch (error) {
+//       res.send({
+//         status:500,
+//         error:error.message
+//       });
+//   }
+// });
 
 app.listen(PORT, () => {
   console.log("server is running.");
@@ -458,7 +544,7 @@ app.listen(PORT, () => {
 // })
 
 
-
+  
 // Steps to follow>.........
 
 // Basic Express layout
