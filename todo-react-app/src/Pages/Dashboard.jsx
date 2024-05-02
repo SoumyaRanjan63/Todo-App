@@ -2,8 +2,7 @@ import TodoList from '../Components/TodoList'
 
 const Dashboard = () => {
     return (
-        <div>
-        
+        <div>        
             <TodoList/>
         </div>
     );

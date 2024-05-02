@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { authFailure } from "../Store/userSlice";
 import { signIn } from "../Store/actions/authActions";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Avatar, Button, Grid, Paper, TextField, Typography } from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import './login.css'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -24,8 +27,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(signIn(formData,()=>navigate("/Dashboard") ));
-    
+    dispatch(signIn(formData, () => navigate("/Dashboard")));
   };
   useEffect(() => {
     if (error) {
@@ -34,32 +36,63 @@ const Login = () => {
     }
   }, [dispatch, error]);
 
+  const paperStyle = { padding: "30px 20px", width: 350, margin: "6vw auto" };
   return (
-    <div>
-      {loading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
-      <form onSubmit={handleSubmit} method="POST">
-        <input
-          type="text"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Email or username"
-        />
-        <br />
-        <input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Password"
-        />
-        <br />
-        <button type="submit" disabled={loading}>
-          Login
-        </button>
-      </form>
-    </div>
+    <>
+    <div className="logincontainer">
+      <Grid align="center"  >
+        <Paper elevation={15} style={paperStyle}>
+          <Avatar style={{ background: "#1bbd7e" }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <h2 style={{color:"maroon"}}>Login</h2>
+
+          {loading && <p>Loading...</p>}
+          {error && <p>Error: {error}</p>}
+          <form onSubmit={handleSubmit} method="POST">
+            <TextField
+              fullWidth
+              type="text"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              variant="standard"
+              placeholder="Email or username"
+              label="Email"
+            />
+            <br />
+            <TextField
+              fullWidth
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              variant="standard"
+              placeholder="Password"
+              label="Password"
+            />
+            <br />
+             <Grid container justifyContent="center" >
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={loading}
+                style={{ margin: "20px" }}
+              >
+                Login
+              </Button>
+              <Typography>
+                New to our platform? Please&nbsp;
+                <Link to="/Signup">Sign up</Link>
+                &nbsp;here
+              </Typography>
+            </Grid>
+          </form>
+        </Paper>
+      </Grid>
+      </div>
+    </>
   );
 };
 
