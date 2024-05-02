@@ -41,8 +41,8 @@ const TodoSlice = createSlice({
     initialTodo(state, action) {
       state.todos = action.payload;
     },
-    todoSearch(state,action){
-      state.searchedTodo = action.payload
+    todoSearch(state, action) {
+      state.searchedTodo = action.payload;
     },
     setError (state,action){
       state.error = action.payload

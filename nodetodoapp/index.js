@@ -113,6 +113,12 @@ app.post("/register", async (req, res) => {
     });
 
     const userDb = await userObj.save();
+      const emailData = {
+        email: `${email}`, 
+        subject: "New Todo Added",
+        message: "You are successfully signedup ."
+    };
+        await sendEmail(emailData);
     res.send({
       status: 200,
       message: "User created successfully",
@@ -170,7 +176,12 @@ app.post("/login", async (req, res) => {
     const token = jwt.sign({
        userId: userDb._id, username: userDb.username, email: userDb.email
        }, process.env.jwttoken ,{expiresIn});
-
+       const emailData = {
+        email: `${email}`, 
+        subject: "New Todo Added",
+        message: `You are successfully logged in.`
+       };
+        await sendEmail(emailData);
     
     return res.send({
       status: 200,
