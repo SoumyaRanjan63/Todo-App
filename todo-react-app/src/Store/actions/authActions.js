@@ -10,14 +10,13 @@ export const signUp = (userData, navigateTo) => async (dispatch) => {
     if (response.data.error) {
       throw new Error(response.data.error);
     }
-    if(response.data.status === 400){
-      alert("Email or username already exist !")
-      navigateTo;
+    if (response.data.status === 400) {
+      alert("Email or username already exist !");
       return;
     } 
     dispatch(authSuccess(null));
     alert("Account created successfully. Please login to continue.");
-    navigateTo;
+    navigateTo();
   } catch (error) {
     dispatch(authFailure(error.message));
   }

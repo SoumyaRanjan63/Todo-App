@@ -17,6 +17,9 @@ const Login = () => {
 
   const loading = useSelector((state) => state.user.isLoading);
   const error = useSelector((state) => state.user.error);
+  useEffect(() => {
+    dispatch(authFailure(null));
+  }, [dispatch]);
 
   const handleChange = (e) => {
     setFormData({

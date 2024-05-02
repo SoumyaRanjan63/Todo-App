@@ -14,7 +14,7 @@ const Header = () => {
         navigate('/Signup');
     };
     const handleDashboard = () => {
-        console.log("navigate to dashboard ")
+        
         navigate('/Dashboard');
     };
 
